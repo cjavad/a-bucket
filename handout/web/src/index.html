@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="https://unpkg.com/papercss@1.9.2/dist/paper.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <script>
+        function list_images() {
+            return fetch('/cdn/', {
+                method: 'LIST'
+            }).then(response => {
+                return response.json();
+            });
+        }
+        
+        const generate_component = ({ key }) => `<div class="paper container"><img src="/cdn/${key} "height="100%" width="100%" /><p>${key}</p></div>`
+        
+        function render_images() {
+            list_images().then(images => {
+                const image_container = document.getElementsByClassName('images')[0];
+                image_container.innerHTML = images.map(generate_component).join('');
+            });
+        }
+        
+        render_images();
+    </script>
+    <title>Image gallery</title>
+
+</head>
+
+<body>
+    <nav class="border split-nav">
+        <div class="nav-brand">
+            <h3><a href="/">Image Gallery</a></h3>
+        </div>
+        <div class="collapsible">
+            <input id="collapsible1" type="checkbox" name="collapsible1">
+            <label for="collapsible1">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+            </label>
+            <div class="collapsible-body">
+                <ul class="inline">
+                    <li><a href="/upload.html">Upload</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Github</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="paper container">
+        <h1>Image gallery</h1>
+        <div class="row flex-center">
+            <div class="col-6 col">
+                <a href="./upload.html">
+                    <button class="btn-block">Upload your own image</button>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="images">
+
+    </div>
+</body>
+
+</html>

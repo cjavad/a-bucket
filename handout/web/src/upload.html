@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="https://unpkg.com/papercss@1.9.2/dist/paper.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <script>
+        function upload_file(path, data, mime_type, private = false) {
+            fetch(`/cdn${path.startsWith('/') ? '' : '/'}${path}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': mime_type,
+                    'X-Readable-By': private ? 'Owner' : 'Public',
+                },
+                body: data,
+            }).then(response => {
+                if (response.ok) {
+                    alert('Upload successful!');
+                } else {
+                    alert('Upload failed!');
+                }
+            });
+        }
+
+        function upload() {
+            const form = document.getElementById('upload-form');
+
+            const files = document.getElementById('file').files;
+            const path = document.getElementById('path').value;
+            const private = document.getElementById('private').checked;
+
+            if (!files.length) {
+                return alert('Please choose a file to upload first.');
+            }
+
+            const file = files[0];
+
+            if (!file || !path) {
+                return alert('Please fill out all fields.');
+            }
+
+            const reader = new FileReader();
+
+            reader.onloadend = function() {
+                upload_file(path, reader.result, file.type, private);
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+    <title>Upload - Image gallery</title>
+</head>
+
+<body>
+    <nav class="border split-nav">
+        <div class="nav-brand">
+            <h3><a href="/">Image Gallery</a></h3>
+        </div>
+        <div class="collapsible">
+            <input id="collapsible1" type="checkbox" name="collapsible1">
+            <label for="collapsible1">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+            </label>
+            <div class="collapsible-body">
+                <ul class="inline">
+                    <li><a href="/upload.html">Upload</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Github</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="paper container">
+        <h1>Upload</h1>
+        <form id="upload-form">
+            <div class="form-group">
+                <label for="path">Path to upload to</label>
+                <input type="text" placeholder="/image.png" name="path" id="path">
+            </div>
+            <div class="form-group">
+                <label for="file">Select file</label>
+                <input type="file" placeholder="/image.png" accept="image/*" name="file" id="file">
+            </div>
+            <div class="form-group">
+                <label for="private" class="paper-check">
+                    <input type="checkbox" name="private" id="private">
+                    <span>Only for you to see</span>
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="button" class="btn-success" value="Upload file" onclick="upload()" />
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
